@@ -3,6 +3,11 @@ Our software is being implemented in Python we will use QTest to confirm input f
 QTest will be used for the UI testing. Some of the requirements we must cover are:
  - Clicking to change view dates must successfully move view sufficiently far into the past and future
  - Typing in fields must reject Strings too long without crashing
+ - All interactive UI elements respond correctly to user input
+ - Calendar view can be switched between weekly and monthly
+ - All pop-up windows open and collapse properly
+ - No more than one appointment editing pop-up shall exist at once
+ - When a unique error occurs, the unique error pop-up is displayed to the user
 
 PyTest will test the backend functions:
  - Data inserted into each database from application must read out without changing
