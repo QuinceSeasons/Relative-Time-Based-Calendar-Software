@@ -1,5 +1,11 @@
 Our software is being implemented in Python we will use QTest to confirm input field functionality and PyTest for back-end function testing.
 
+Policies:
+ - All UI elements shall be tested, no equivalence between element types may be assumed.
+ - Low-level functional requirements shall be tested by equivalence class.
+ - Test cases shall be written by the programmer and approved by one other engineer on the application team.
+ - All test cases will be regressively run with each iteration to the software.
+
 QTest will be used for the UI testing. Some of the requirements we must cover are:
  - Clicking to change view dates must successfully move view sufficiently far into the past and future
  - Typing in fields must reject Strings too long without crashing
@@ -13,6 +19,6 @@ PyTest will test the backend functions:
  - Data inserted into each database from application must read out without changing
  - Scheduling appointments must update the correct database (Regular, Relative, Series)
  - Scheduling appointments must accurately convert appointment details to database entry, equivalent after a database read
- - Deleting appointment must decrease database size and not be accessible
+ - Deleting appointment must decrease database size and make the appointment no longer accessible
  - Attempting to edit deleted appointment must reject without crash (cover UI race conditions)
- - Updating view must return appointments in list only if their view is toggled on. Cover permutations of viewing Series, Relative, Regular. Treat user defined appointment types as equivalent and only test a whitelist and blacklist scenario (target on while all others off, target off while all others on)
+ - Updating view must return appointments in list only if their view is toggled on. Cover permutations of viewing Series, Relative, Regular. Treat user defined appointment types as equivalent and only test a whitelist and blacklist scenario (target appointment type shown while all others hidden, target appointment type hidden while all others shown)
