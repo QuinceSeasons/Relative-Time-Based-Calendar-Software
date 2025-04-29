@@ -24,6 +24,7 @@ class CalendarApp(QWidget):
         self.date_box = QDateEdit()
         self.date_box.setDate(QDate.currentDate())
         self.dropdown = QComboBox()
+        self.apptType = QComboBox()
         self.start_time = QLineEdit()
         self.end_time = QLineEdit()
         self.description = QLineEdit()
@@ -32,8 +33,8 @@ class CalendarApp(QWidget):
         self.btn_delete = QPushButton('Delete Appointment')
         self.btn_delete.setObjectName('btn_delete') # can be used as id in CSS
 
-        self.table = QTableWidget(0, 6)
-        self.table.setHorizontalHeaderLabels(['ID', 'Date', 'Start Time', 'End Time', 'Category', 'Description'])
+        self.table = QTableWidget(0, 7)
+        self.table.setHorizontalHeaderLabels(['ID', 'Date', 'Start Time', 'End Time', 'Category', 'Description', 'Type'])
         # edit table width
         self.table.horizontalHeader().setSectionResizeMode(QHeaderView.ResizeMode.Stretch)
 
@@ -42,6 +43,7 @@ class CalendarApp(QWidget):
 
         self.btn_add.clicked.connect(self.add_appointment)
         self.btn_delete.clicked.connect(self.delete_appointment)
+        self.apptType.currentTextChanged.connect(self.update_buttons)
 
         self.apply_styles()
 
@@ -62,6 +64,8 @@ class CalendarApp(QWidget):
         row1.addWidget(self.date_box)
         row1.addWidget(QLabel('Category'))
         row1.addWidget(self.dropdown)
+        row1.addWidget(QLabel('Appointment Type'))
+        row1.addWidget(self.apptType)
 
         # row 2
         row2.addWidget(QLabel('Start Time'))
@@ -134,6 +138,8 @@ class CalendarApp(QWidget):
     def populate_dropdown(self):
         categories = ['Personal', 'Meals', 'Medical', 'Classes', 'Chores', 'Recreation']
         self.dropdown.addItems(categories)
+        types = ['Regular', 'Relative', 'Series']
+        self.apptType.addItems(types)
 
     def load_table_data(self): # takes the info from our database and projects it into our application
         appointments = fetch_appointments() # returns a list
@@ -156,13 +162,14 @@ class CalendarApp(QWidget):
         start_time = self.start_time.text() # QLineEdit
         end_time = self.end_time.text()
         description = self.description.text()
+        appt_type = self.apptType.currentText()
 
         if not start_time or not end_time or not description:
             # QMessageBox.warning(self, 'Input Error', 'Amount and Description can not be empty')
             QMessageBox.warning(self, 'Input Error', 'Times and Description cannot be empty')
             return
 
-        if add_appointment(date, start_time, end_time, category, description):
+        if add_appointment(date, start_time, end_time, category, description, appt_type):
             self.load_table_data()
             # clear inputs
             self.clear_inputs()
@@ -181,3 +188,6 @@ class CalendarApp(QWidget):
 
         if confirm == QMessageBox.StandardButton.Yes and delete_appointment(appointment_id):
             self.load_table_data()
+
+    def update_buttons(self):
+        self.load_table_data()

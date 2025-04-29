@@ -19,7 +19,8 @@ def init_db(db_name):
                     start_time TEXT,
                     end_time TEXT,
                     category TEXT,
-                    description TEXT
+                    description TEXT,
+                    appt_type TEXT
                 )
                 """)
     return True
@@ -28,23 +29,24 @@ def fetch_appointments():
     query = QSqlQuery('SELECT * FROM calendar ORDER BY date DESC')
     appointments = [] # essentially a matrix. list full of lists, each list in expenses represents a row in the database
     while query.next():
-        appointments.append([query.value(i) for i in range(6)]) # 6 is the number of entities in calendar
+        appointments.append([query.value(i) for i in range(7)]) # 7 is the number of entities in calendar
     return appointments
 
-def add_appointment(date, start_time, end_time, category, description):
+def add_appointment(date, start_time, end_time, category, description, appt_type):
     # id is automatically generated
     query = QSqlQuery()
     # prepare to add data, prepare to send data off to database
     query.prepare("""
-                    INSERT INTO calendar (date, start_time, end_time, category, description)
-                    VALUES (?, ?, ?, ?, ?)
+                    INSERT INTO calendar (date, start_time, end_time, category, description, appt_type)
+                    VALUES (?, ?, ?, ?, ?, ?)
                 """)
-    # bind all the values to the SQL query, the above question marks need binding values
+    # bind all the values to the SQL query, type is 0 for regular, 1 relative, 2 series
     query.addBindValue(date)
     query.addBindValue(start_time)
     query.addBindValue(end_time)
     query.addBindValue(category)
     query.addBindValue(description)
+    query.addBindValue(appt_type)
 
     return query.exec()
 
